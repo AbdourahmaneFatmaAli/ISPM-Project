@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Apr 04, 2026 at 02:10 AM
+-- Generation Time: Apr 06, 2026 at 01:12 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -54,7 +54,7 @@ INSERT INTO `appointments` (`id`, `user_id`, `service_id`, `date`, `time`, `stat
 (9, 2, 13, '2026-04-25', '01:39:00', 'booked', 'APPT-69d041b024af4-USR-2', '2026-04-03 22:39:44'),
 (10, 2, 12, '2026-04-11', '22:43:00', 'booked', 'APPT-69d041e6c80cb-USR-2', '2026-04-03 22:40:38'),
 (11, 2, 11, '2026-04-09', '22:45:00', 'booked', 'APPT-69d04210dcdba-USR-2', '2026-04-03 22:41:20'),
-(12, 2, 16, '2026-04-06', '22:44:00', 'booked', 'APPT-69d0425d805e4-USR-2', '2026-04-03 22:42:37');
+(12, 2, 16, '2026-04-06', '22:44:00', 'completed', 'APPT-69d0425d805e4-USR-2', '2026-04-03 22:42:37');
 
 -- --------------------------------------------------------
 
@@ -76,7 +76,9 @@ CREATE TABLE `notifications` (
 --
 
 INSERT INTO `notifications` (`id`, `user_id`, `message`, `type`, `status`, `created_at`) VALUES
-(12, 2, 'Your appointment for Residence on 2026-04-06 at 22:44 is confirmed.\n\n━━━━━━━━━━━━━━━━━━━━━━\nStaff: Grace Adjei\nLocation: Hall of Residence A, Room 001\n━━━━━━━━━━━━━━━━━━━━━━\n\nQueue Position: #7\nPlease arrive 10 minutes before your scheduled time.\n\nYou will be notified when it\'s your turn.', 'in-app', 'unread', '2026-04-03 22:42:37');
+(12, 2, 'Your appointment for Residence on 2026-04-06 at 22:44 is confirmed.\n\n━━━━━━━━━━━━━━━━━━━━━━\nStaff: Grace Adjei\nLocation: Hall of Residence A, Room 001\n━━━━━━━━━━━━━━━━━━━━━━\n\nQueue Position: #7\nPlease arrive 10 minutes before your scheduled time.\n\nYou will be notified when it\'s your turn.', 'in-app', 'read', '2026-04-03 22:42:37'),
+(13, 2, 'You are next for Residence!\n\nStaff: Grace Adjei\nLocation: Hall of Residence A, Room 001\n\nPlease proceed to the service counter.', 'in-app', 'unread', '2026-04-05 23:04:20'),
+(14, 2, 'Your Residence service has been completed.\n\nThank you for visiting DQSSA!', 'in-app', 'unread', '2026-04-05 23:04:27');
 
 -- --------------------------------------------------------
 
@@ -102,7 +104,7 @@ INSERT INTO `queue` (`id`, `appointment_id`, `position`, `status`) VALUES
 (4, 9, 4, 'waiting'),
 (5, 10, 5, 'waiting'),
 (6, 11, 6, 'waiting'),
-(7, 12, 7, 'waiting');
+(7, 12, 7, 'done');
 
 -- --------------------------------------------------------
 
@@ -153,7 +155,15 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id`, `name`, `email`, `password`, `role`, `created_at`) VALUES
 (1, 'Admin User', 'admin@dqssa.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin', '2026-04-03 15:11:56'),
-(2, 'Fatma Ali', 'fatmaali@gmail.com', '$2y$10$YaG.xQE1rkz8Gj.q5kdB7u.zfYlBI9oEJo04Z0pfPRitOoMW0yrb6', 'student', '2026-04-03 15:24:50');
+(2, 'Fatma Ali', 'fatmaali@gmail.com', '$2y$10$YaG.xQE1rkz8Gj.q5kdB7u.zfYlBI9oEJo04Z0pfPRitOoMW0yrb6', 'student', '2026-04-03 15:24:50'),
+(3, 'John Mensah', 'john.mensah@dqssa.edu', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'staff', '2026-04-05 23:02:04'),
+(4, 'Ama Serwaa', 'ama.serwaa@dqssa.edu', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'staff', '2026-04-05 23:02:04'),
+(5, 'Abena Osei', 'abena.osei@dqssa.edu', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'staff', '2026-04-05 23:02:04'),
+(6, 'Michael Tetteh', 'michael.tetteh@dqssa.edu', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'staff', '2026-04-05 23:02:04'),
+(7, 'Emmanuel Ntow', 'emmanuel.ntow@dqssa.edu', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'staff', '2026-04-05 23:02:04'),
+(8, 'Grace Adjei', 'grace.adjei@dqssa.edu', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'staff', '2026-04-05 23:02:04'),
+(9, 'Kwame Asare', 'kwame.asare@dqssa.edu', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'staff', '2026-04-05 23:02:04'),
+(10, 'Dr. Kofi Annan', 'kofi.annan@dqssa.edu', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'staff', '2026-04-05 23:02:04');
 
 --
 -- Indexes for dumped tables
@@ -208,7 +218,7 @@ ALTER TABLE `appointments`
 -- AUTO_INCREMENT for table `notifications`
 --
 ALTER TABLE `notifications`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `queue`
@@ -226,7 +236,7 @@ ALTER TABLE `services`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- Constraints for dumped tables
