@@ -5,9 +5,9 @@ require_once 'config/database.php';
 require_once 'includes/header.php';
 
 // Get statistics
-$users = $pdo->query("SELECT COUNT(*) FROM Users")->fetchColumn();
-$appts = $pdo->query("SELECT COUNT(*) FROM Appointments WHERE date = CURDATE()")->fetchColumn();
-$services = $pdo->query("SELECT COUNT(*) FROM Services")->fetchColumn();
+$usersCount = $pdo->query("SELECT COUNT(*) FROM Users")->fetchColumn();
+$todayAppts = $pdo->query("SELECT COUNT(*) FROM Appointments WHERE date = CURDATE()")->fetchColumn();
+$servicesCount = $pdo->query("SELECT COUNT(*) FROM Services")->fetchColumn();
 
 // Get recent appointments for activity log
 $recentActivity = $pdo->query("
@@ -21,41 +21,56 @@ $recentActivity = $pdo->query("
 ?>
 
 <div class="mt-4 mb-4">
-    <h2 class="text-white">
-        <i class="fa-solid fa-shield-halved me-2"></i> Admin Dashboard
+    <h2 class="text-white fw-bold">
+        <i class="fa-solid fa-shield-halved me-2 text-primary"></i> Admin Control Center
     </h2>
-    <p class="text-white opacity-75">System Overview & Management</p>
+    <p class="text-muted small text-uppercase tracking-widest">Pan-Atlantic University Digital Queue System</p>
 </div>
 
 <!-- Statistics Cards -->
 <div class="row g-4 mb-5">
     <div class="col-md-4">
-        <div class="card shadow-sm border-0 bg-primary text-white text-center p-4 position-relative overflow-hidden">
-            <i class="fa-solid fa-users position-absolute opacity-25"
-                style="font-size: 120px; right: -20px; top: -20px;"></i>
-            <h3 class="fw-normal mb-3">Total Users</h3>
-            <h1 class="display-3 fw-bold mb-0 position-relative"><?= $users ?></h1>
-            <p class="small mb-0 mt-2 opacity-75">Registered in System</p>
+        <div class="card shadow-2xl border-0 p-4 position-relative overflow-hidden" style="background: var(--bg-card); border: 1px solid var(--glass-border) !important;">
+            <div class="d-flex align-items-center position-relative z-index-1">
+                <div class="bg-primary bg-opacity-10 rounded-4 p-3 me-4">
+                    <i class="fa-solid fa-users fa-2x text-primary"></i>
+                </div>
+                <div>
+                    <h5 class="text-muted small fw-bold mb-1">TOTAL USERS</h5>
+                    <h2 class="text-white fw-bold mb-0"><?= $usersCount ?></h2>
+                </div>
+            </div>
+            <i class="fa-solid fa-users position-absolute opacity-5" style="font-size: 100px; right: -10px; bottom: -20px;"></i>
         </div>
     </div>
 
     <div class="col-md-4">
-        <div class="card shadow-sm border-0 bg-success text-white text-center p-4 position-relative overflow-hidden">
-            <i class="fa-solid fa-calendar-check position-absolute opacity-25"
-                style="font-size: 120px; right: -20px; top: -20px;"></i>
-            <h3 class="fw-normal mb-3">Today's Appointments</h3>
-            <h1 class="display-3 fw-bold mb-0 position-relative"><?= $appts ?></h1>
-            <p class="small mb-0 mt-2 opacity-75">Scheduled for Today</p>
+        <div class="card shadow-2xl border-0 p-4 position-relative overflow-hidden" style="background: var(--bg-card); border: 1px solid var(--glass-border) !important;">
+            <div class="d-flex align-items-center position-relative z-index-1">
+                <div class="bg-success bg-opacity-10 rounded-4 p-3 me-4">
+                    <i class="fa-solid fa-calendar-check fa-2x text-success"></i>
+                </div>
+                <div>
+                    <h5 class="text-muted small fw-bold mb-1">TODAY'S BOOKINGS</h5>
+                    <h2 class="text-white fw-bold mb-0"><?= $todayAppts ?></h2>
+                </div>
+            </div>
+            <i class="fa-solid fa-calendar-check position-absolute opacity-5" style="font-size: 100px; right: -10px; bottom: -20px;"></i>
         </div>
     </div>
 
     <div class="col-md-4">
-        <div class="card shadow-sm border-0 bg-info text-white text-center p-4 position-relative overflow-hidden">
-            <i class="fa-solid fa-concierge-bell position-absolute opacity-25"
-                style="font-size: 120px; right: -20px; top: -20px;"></i>
-            <h3 class="fw-normal mb-3">Active Services</h3>
-            <h1 class="display-3 fw-bold mb-0 position-relative"><?= $services ?></h1>
-            <p class="small mb-0 mt-2 opacity-75">Available Services</p>
+        <div class="card shadow-2xl border-0 p-4 position-relative overflow-hidden" style="background: var(--bg-card); border: 1px solid var(--glass-border) !important;">
+            <div class="d-flex align-items-center position-relative z-index-1">
+                <div class="bg-accent bg-opacity-10 rounded-4 p-3 me-4">
+                    <i class="fa-solid fa-bell-concierge fa-2x text-accent"></i>
+                </div>
+                <div>
+                    <h5 class="text-muted small fw-bold mb-1">ACTIVE SERVICES</h5>
+                    <h2 class="text-white fw-bold mb-0"><?= $servicesCount ?></h2>
+                </div>
+            </div>
+            <i class="fa-solid fa-bell-concierge position-absolute opacity-5" style="font-size: 100px; right: -10px; bottom: -20px;"></i>
         </div>
     </div>
 </div>
@@ -64,25 +79,49 @@ $recentActivity = $pdo->query("
 <div class="row g-4">
     <!-- Admin Actions -->
     <div class="col-lg-4">
-        <div class="card shadow-sm border-0 h-100">
-            <div class="card-header bg-white py-3">
-                <h5 class="mb-0 fw-bold">
-                    <i class="fa-solid fa-tools me-2 text-primary"></i>Admin Actions
+        <div class="card shadow-2xl border-0 h-100" style="background: var(--bg-card); border: 1px solid var(--glass-border) !important;">
+            <div class="card-header border-0 py-3" style="background: rgba(255,255,255,0.05);">
+                <h5 class="mb-0 fw-bold text-white">
+                    <i class="fa-solid fa-sliders me-2 text-primary"></i>Quick Management
                 </h5>
             </div>
-            <div class="card-body">
+            <div class="card-body py-4">
                 <div class="d-grid gap-3">
-                    <a href="manage_users.php" class="btn btn-outline-primary btn-lg text-start">
-                        <i class="fa-solid fa-users me-3"></i> Manage Users
+                    <a href="manage_users.php" class="btn btn-outline-light text-start py-3 px-4 border-0" style="background: rgba(255,255,255,0.03);">
+                        <div class="d-flex align-items-center">
+                            <i class="fa-solid fa-users me-3 text-primary fs-4"></i>
+                            <div>
+                                <div class="fw-bold">Users Database</div>
+                                <small class="text-muted">Create, Edit, Roles</small>
+                            </div>
+                        </div>
                     </a>
-                    <a href="manage_services.php" class="btn btn-outline-success btn-lg text-start">
-                        <i class="fa-solid fa-concierge-bell me-3"></i> Manage Services
+                    <a href="manage_services.php" class="btn btn-outline-light text-start py-3 px-4 border-0" style="background: rgba(255,255,255,0.03);">
+                        <div class="d-flex align-items-center">
+                            <i class="fa-solid fa-concierge-bell me-3 text-success fs-4"></i>
+                            <div>
+                                <div class="fw-bold">System Services</div>
+                                <small class="text-muted">Logic, Staff, Offices</small>
+                            </div>
+                        </div>
                     </a>
-                    <a href="manage_appointments.php" class="btn btn-outline-info btn-lg text-start">
-                        <i class="fa-solid fa-calendar-alt me-3"></i> View Appointments
+                    <a href="manage_appointments.php" class="btn btn-outline-light text-start py-3 px-4 border-0" style="background: rgba(255,255,255,0.03);">
+                        <div class="d-flex align-items-center">
+                            <i class="fa-solid fa-calendar-alt me-3 text-info fs-4"></i>
+                            <div>
+                                <div class="fw-bold">Appointments Master</div>
+                                <small class="text-muted">Full CRUD, Reschedule</small>
+                            </div>
+                        </div>
                     </a>
-                    <a href="reports.php" class="btn btn-outline-dark btn-lg text-start">
-                        <i class="fa-solid fa-chart-line me-3"></i> View Reports
+                    <a href="reports.php" class="btn btn-outline-light text-start py-3 px-4 border-0" style="background: rgba(255,255,255,0.03);">
+                        <div class="d-flex align-items-center">
+                            <i class="fa-solid fa-chart-pie me-3 text-accent fs-4"></i>
+                            <div>
+                                <div class="fw-bold">Analytics & Reports</div>
+                                <small class="text-muted">Queue Stats, Efficiency</small>
+                            </div>
+                        </div>
                     </a>
                 </div>
             </div>
@@ -91,56 +130,46 @@ $recentActivity = $pdo->query("
 
     <!-- Recent System Activity -->
     <div class="col-lg-8">
-        <div class="card shadow-sm border-0 h-100">
-            <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
-                <h5 class="mb-0 fw-bold">
+        <div class="card shadow-2xl border-0 h-100" style="background: var(--bg-card); border: 1px solid var(--glass-border) !important;">
+            <div class="card-header border-0 py-3 d-flex justify-content-between align-items-center" style="background: rgba(255,255,255,0.05);">
+                <h5 class="mb-0 fw-bold text-white">
                     <i class="fa-solid fa-history me-2 text-success"></i>Recent System Activity
                 </h5>
-                <span class="badge bg-primary"><?= count($recentActivity) ?> Records</span>
+                <span class="badge bg-primary bg-opacity-25 text-primary border border-primary border-opacity-25 px-3"><?= count($recentActivity) ?> Records</span>
             </div>
             <div class="card-body p-0">
                 <?php if (empty($recentActivity)): ?>
                     <div class="text-center py-5">
-                        <i class="fas fa-inbox fa-3x text-muted opacity-50 mb-3"></i>
-                        <p class="text-muted mb-0">No recent activity</p>
+                        <i class="fas fa-inbox fa-3x text-muted opacity-25 mb-3"></i>
+                        <p class="text-muted mb-0">No recent activity detected.</p>
                     </div>
                 <?php else: ?>
                     <div class="table-responsive">
-                        <table class="table table-hover mb-0">
-                            <thead class="table-light">
+                        <table class="table table-hover mb-0 align-middle">
+                            <thead style="background: rgba(255,255,255,0.02);">
                                 <tr>
-                                    <th class="px-4">Time</th>
-                                    <th>User</th>
-                                    <th>Action</th>
+                                    <th class="px-4 text-muted small py-3">TIMESTAMP</th>
+                                    <th class="text-muted small py-3">SYSTEM ENTITY</th>
+                                    <th class="text-muted small py-3">DESCRIPTION</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php foreach ($recentActivity as $activity): ?>
                                     <tr>
-                                        <td class="px-4 text-muted">
-                                            <?php
-                                            $time = strtotime($activity['created_at']);
-                                            $diff = time() - $time;
-
-                                            if ($diff < 60) {
-                                                echo "Just now";
-                                            } elseif ($diff < 3600) {
-                                                echo floor($diff / 60) . " min ago";
-                                            } elseif ($diff < 86400) {
-                                                echo floor($diff / 3600) . " hr ago";
-                                            } else {
-                                                echo date('M d, Y', $time);
-                                            }
-                                            ?>
+                                        <td class="px-4 text-muted small">
+                                            <?= date('M d, H:i', strtotime($activity['created_at'])) ?>
                                         </td>
                                         <td>
-                                            <i class="fas fa-user-circle me-2 text-primary"></i>
-                                            <?= htmlspecialchars($activity['name']) ?>
+                                            <div class="d-flex align-items-center">
+                                                <div class="bg-primary bg-opacity-10 rounded-circle text-center me-2" style="width: 32px; height: 32px; line-height: 32px;">
+                                                    <i class="fas fa-user text-primary small"></i>
+                                                </div>
+                                                <span class="text-white small fw-bold"><?= htmlspecialchars($activity['name']) ?></span>
+                                            </div>
                                         </td>
                                         <td>
-                                            <i class="fas fa-calendar-plus me-2 text-success"></i>
-                                            Booked appointment for
-                                            <strong><?= htmlspecialchars($activity['service_name']) ?></strong>
+                                            <span class="text-muted small">Booked </span>
+                                            <span class="text-accent small fw-bold"><?= htmlspecialchars($activity['service_name']) ?></span>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>
@@ -149,64 +178,34 @@ $recentActivity = $pdo->query("
                     </div>
                 <?php endif; ?>
             </div>
+            <div class="card-footer border-0 bg-transparent text-center py-3">
+                <a href="reports.php" class="text-primary text-decoration-none small fw-bold border-bottom border-primary border-opacity-25 pb-1">VIEW EXTENDED LOGS</a>
+            </div>
         </div>
     </div>
 </div>
 
-<!-- System Status Cards -->
-<div class="row g-4 mt-1">
-    <div class="col-md-3">
-        <div class="card shadow-sm border-0 text-center p-3">
-            <i class="fas fa-check-circle fa-3x text-success mb-2"></i>
-            <h6 class="fw-bold mb-1">System Status</h6>
-            <p class="text-success mb-0 small">All Systems Operational</p>
-        </div>
-    </div>
-
-    <div class="col-md-3">
-        <div class="card shadow-sm border-0 text-center p-3">
-            <i class="fas fa-database fa-3x text-info mb-2"></i>
-            <h6 class="fw-bold mb-1">Database</h6>
-            <p class="text-info mb-0 small">Connected</p>
-        </div>
-    </div>
-
-    <div class="col-md-3">
-        <div class="card shadow-sm border-0 text-center p-3">
-            <i class="fas fa-server fa-3x text-warning mb-2"></i>
-            <h6 class="fw-bold mb-1">Server Load</h6>
-            <p class="text-warning mb-0 small">Normal</p>
-        </div>
-    </div>
-
-    <div class="col-md-3">
-        <div class="card shadow-sm border-0 text-center p-3">
-            <i class="fas fa-shield-alt fa-3x text-primary mb-2"></i>
-            <h6 class="fw-bold mb-1">Security</h6>
-            <p class="text-primary mb-0 small">Protected</p>
-        </div>
-    </div>
-</div>
-
-<!-- Quick Stats -->
-<div class="row g-4 mt-1 mb-4">
+<!-- System Status Bar -->
+<div class="row g-4 mt-2 mb-4">
     <div class="col-12">
-        <div class="card shadow-sm border-0" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-            <div class="card-body text-white p-4">
-                <div class="row align-items-center">
-                    <div class="col-md-8">
-                        <h5 class="fw-bold mb-2">
-                            <i class="fas fa-info-circle me-2"></i>System Information
-                        </h5>
-                        <p class="mb-0 opacity-75">
-                            DQASS v1.0 | Last backup: <?= date('M d, Y h:i A') ?> |
-                            Uptime: 99.9% | Database: MySQL
-                        </p>
+        <div class="card shadow-2xl border-0 p-4" style="background: var(--bg-card); border: 1px solid var(--glass-border) !important;">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <div class="d-flex align-items-center">
+                        <div class="animate__animated animate__pulse animate__infinite me-3">
+                            <i class="fas fa-circle text-success" style="font-size: 10px; filter: drop-shadow(0 0 5px #10b981);"></i>
+                        </div>
+                        <h6 class="text-white mb-0 fw-bold">DQASS SYSTEM OPERATIONAL</h6>
+                        <span class="mx-3 text-muted">|</span>
+                        <span class="text-muted small">UPTIME: 99.9%</span>
+                        <span class="mx-3 text-muted">|</span>
+                        <span class="text-muted small">LAST BACKUP: <?= date('H:i') ?></span>
                     </div>
-                    <div class="col-md-4 text-md-end mt-3 mt-md-0">
-                        <a href="#" class="btn btn-light btn-lg">
-                            <i class="fas fa-cog me-2"></i>Settings
-                        </a>
+                </div>
+                <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                    <div class="d-flex justify-content-md-end gap-4 text-muted small fw-bold">
+                        <span><i class="fas fa-database me-2"></i>DB SYNCED</span>
+                        <span><i class="fas fa-shield-alt me-2"></i>SSL ACTIVE</span>
                     </div>
                 </div>
             </div>
