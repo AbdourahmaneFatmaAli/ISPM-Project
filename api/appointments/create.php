@@ -1,13 +1,36 @@
 <?php
-require_once '../../includes/auth_check.php';
+require_once '../../config/config.php';
 require_once '../../config/database.php';
 require_once '../email/send_email.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if(!validate_csrf_token($_POST['csrf_token'] ?? '')) {
+        die("CSRF token validation failed.");
+    }
+    
     $user_id = $_SESSION['user_id'];
     $service_id = $_POST['service_id'];
     $date = $_POST['date'];
     $time = $_POST['time'];
+    
+    // --- SLOT AVAILABILITY CHECK (30-minute window) ---
+    // Check if any active appointment for this service/date overlaps with the 30-min window
+    $check_stmt = $pdo->prepare("
+        SELECT COUNT(*) 
+        FROM Appointments 
+        WHERE service_id = ? 
+          AND date = ? 
+          AND status NOT IN ('cancelled', 'missed') 
+          AND ABS(TIMESTAMPDIFF(MINUTE, time, ?)) < 30
+    ");
+    $check_stmt->execute([$service_id, $date, $time]);
+    $overlap_count = $check_stmt->fetchColumn();
+
+    if ($overlap_count > 0) {
+        header("Location: ../../book.php?error=This+time+slot+is+already+reserved.+Please+choose+a+time+at+least+30+minutes+apart.");
+        exit;
+    }
+    // --------------------------------------------------
     
     // Get service details with faculty name and building
     $svc_stmt = $pdo->prepare("SELECT name, faculty_name, building FROM Services WHERE id = ?");

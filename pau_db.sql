@@ -33,7 +33,7 @@ CREATE TABLE `appointments` (
   `service_id` int(11) NOT NULL,
   `date` date NOT NULL,
   `time` time NOT NULL,
-  `status` enum('booked','checked-in','completed') DEFAULT 'booked',
+  `status` enum('booked','checked-in','completed','missed') DEFAULT 'booked',
   `qr_code` text DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -90,7 +90,8 @@ CREATE TABLE `queue` (
   `id` int(11) NOT NULL,
   `appointment_id` int(11) NOT NULL,
   `position` int(11) NOT NULL,
-  `status` enum('waiting','serving','done') DEFAULT 'waiting'
+  `status` enum('waiting','serving','done','missed') DEFAULT 'waiting',
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --

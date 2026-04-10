@@ -1,6 +1,12 @@
 <?php
+require_once '../../config/config.php';
 require_once '../../config/database.php';
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if(!validate_csrf_token($_POST['csrf_token'] ?? '')) {
+        die("CSRF token validation failed.");
+    }
+    
     $name = trim($_POST['name']);
     $email = trim($_POST['email']);
     $password = password_hash($_POST['password'], PASSWORD_BCRYPT);

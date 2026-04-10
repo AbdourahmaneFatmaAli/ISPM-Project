@@ -196,41 +196,78 @@ $statusInfo = $appointment
                 </p>
 
                 <?php elseif ($appointment['status'] === 'booked'): ?>
-                <!-- ── BOOKED — Show QR code ──────────────────────────────── -->
-                    <?php if ($qr_image_url): ?>
-                        <!-- QR Image -->
-                        <div class="bg-white border rounded-3 p-3 d-inline-block mb-3 shadow-sm" id="qr-box">
-                            <img
-                                src="<?= htmlspecialchars($qr_image_url) ?>"
-                                alt="QR Code"
-                                class="img-fluid"
-                                style="max-width: 240px; width: 100%;"
-                                id="qr-img"
-                                onerror="showFallback()"
+                <!-- ── BOOKED — Show QR code + Join Queue Button ──────────────── -->
+                    <div id="checkin-section">
+                        <?php 
+                        $is_today = ($appointment['date'] === date('Y-m-d'));
+                        if ($qr_image_url): ?>
+                            <div class="bg-white border rounded-3 p-3 d-inline-block mb-3 shadow-sm <?= !$is_today ? 'opacity-50 grayscale' : '' ?>" id="qr-box" style="<?= !$is_today ? 'filter: contrast(0.5);' : '' ?>">
+                                <img src="<?= e($qr_image_url) ?>" alt="QR Code" class="img-fluid" style="max-width: 240px; width: 100%;" id="qr-img" onerror="showFallback()">
+                            </div>
+                            <div id="qr-fallback" class="bg-light border rounded-3 p-4 mb-3 d-none">
+                                <p class="text-muted small mb-1">Your check-in code:</p>
+                                <h5 class="fw-bold font-monospace text-primary text-break"><?= e($appointment['qr_code']) ?></h5>
+                            </div>
+                        <?php endif; ?>
+
+                        <div class="d-grid mb-3">
+                            <button 
+                                id="btn-join-queue" 
+                                class="btn btn-<?= $appointment['status'] === 'missed' ? 'warning' : 'success' ?> btn-lg shadow-sm" 
+                                data-token="<?= e($appointment['qr_code']) ?>"
+                                <?= !$is_today ? 'disabled title="Check-in only available on the day of appointment"' : '' ?>
                             >
+                                <i class="fa-solid fa-right-to-bracket me-2"></i>
+                                <?= !$is_today ? 'Check-in Unavailable' : ($appointment['status'] === 'missed' ? 'Re-Join Digital Queue' : 'Join Digital Queue') ?>
+                            </button>
+
+                            <?php if (!$is_today): ?>
+                                <div class="alert alert-info border-0 bg-info bg-opacity-10 mt-3 mb-0 py-2">
+                                    <i class="fa-solid fa-clock me-2"></i>
+                                    <span class="small">Check-in will be available on <strong><?= date('M d, Y', strtotime($appointment['date'])) ?></strong>.</span>
+                                </div>
+                            <?php else: ?>
+                                <p class="text-muted small mt-2">
+                                    <i class="fa-solid fa-circle-info me-1"></i>
+                                    <?= $appointment['status'] === 'missed' ? 'You missed your turn. Click above to join the end of the line.' : 'Click above to join the queue from wherever you are.' ?>
+                                </p>
+                            <?php endif; ?>
                         </div>
-                        <!-- Fallback token (shown if image fails to load) -->
-                        <div id="qr-fallback" class="bg-light border rounded-3 p-4 mb-3 d-none">
-                            <p class="text-muted small mb-1">Your check-in code:</p>
-                            <h5 class="fw-bold font-monospace text-primary text-break">
-                                <?= htmlspecialchars($appointment['qr_code']) ?>
-                            </h5>
-                            <p class="text-muted small mb-0">Show this code to staff if QR image doesn't load.</p>
-                        </div>
-                    <?php else: ?>
-                        <!-- No QR token — show raw code -->
-                        <div class="bg-light border rounded-3 p-4 mb-3">
-                            <p class="text-muted small mb-1">Your check-in code:</p>
-                            <h5 class="fw-bold font-monospace text-primary text-break">
-                                <?= htmlspecialchars($appointment['qr_code']) ?>
-                            </h5>
-                        </div>
-                    <?php endif; ?>
-                    <p class="text-muted small">
-                        <i class="fa-solid fa-circle-info me-1 text-primary"></i>
-                        Show this QR code to staff or scan it at the check-in kiosk on the day of your appointment.
-                    </p>
+                    </div>
                 <?php endif; ?>
+
+                <!-- ── MISSED STATUS ALERT ─────────────────────────────────── -->
+                <?php if ($appointment['status'] === 'missed'): ?>
+                     <div class="alert alert-warning mb-3">
+                        <i class="fa-solid fa-circle-exclamation me-2"></i><strong>Turn Missed</strong>
+                        <p class="small mb-0">We called your number but you weren't present. Please click the button above to rejoin the queue.</p>
+                     </div>
+                <?php endif; ?>
+
+                <!-- ── LIVE QUEUE SECTION (Visible after check-in) ────────────── -->
+                <div id="live-queue-section" class="<?= $appointment['status'] === 'checked-in' ? '' : 'd-none' ?>">
+                    <div class="bg-primary bg-opacity-10 rounded-3 py-4 px-3 mb-3 border border-primary border-opacity-25">
+                        <p class="text-muted small mb-1">Live Queue Status</p>
+                        <div id="queue-details">
+                            <h1 class="display-1 fw-bold text-primary mb-2" id="live-pos">#<?= $queueInfo ? (int)$queueInfo['position'] : '—' ?></h1>
+                            <div id="serving-status" class="mb-3">
+                                <span class="badge bg-warning text-dark px-3 py-2 fs-6" id="status-badge">
+                                    <i class="fa-solid fa-hourglass-half me-1"></i>Waiting
+                                </span>
+                            </div>
+                            <div class="alert alert-info py-2 small mb-0">
+                                <i class="fa-solid fa-users me-2"></i><span id="people-ahead">?</span> people ahead of you
+                            </div>
+                        </div>
+                        <div id="proceed-alert" class="d-none">
+                            <div class="alert alert-success py-4 mb-0 animate__animated animate__pulse animate__infinite">
+                                <i class="fa-solid fa-bullhorn fa-2x mb-3 d-block"></i>
+                                <h4 class="fw-bold">IT'S YOUR TURN!</h4>
+                                <p class="mb-0">Please proceed to the <strong><?= e($appointment['service_name']) ?></strong> counter now.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
             </div>
 
@@ -316,8 +353,77 @@ $statusInfo = $appointment
 <script>
     // If QR image fails to load (e.g. offline), show raw token fallback
     function showFallback() {
-        document.getElementById('qr-box').classList.add('d-none');
-        document.getElementById('qr-fallback').classList.remove('d-none');
+        const qrBox = document.getElementById('qr-box');
+        const qrFallback = document.getElementById('qr-fallback');
+        if(qrBox) qrBox.classList.add('d-none');
+        if(qrFallback) qrFallback.classList.remove('d-none');
+    }
+
+    // ── Check-in Logic ────────────────────────────────────────────────────────
+    const btnJoin = document.getElementById('btn-join-queue');
+    if (btnJoin) {
+        btnJoin.addEventListener('click', async function() {
+            const token = this.getAttribute('data-token');
+            this.disabled = true;
+            this.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Joining...';
+
+            try {
+                const formData = new FormData();
+                formData.append('qr_code', token);
+                
+                const response = await fetch('api/queue/checkin.php', {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await response.json();
+
+                if (result.status === 'success') {
+                    location.reload(); // Refresh to switch to live view
+                } else {
+                    alert(result.message);
+                    this.disabled = false;
+                    this.innerHTML = '<i class="fa-solid fa-right-to-bracket me-2"></i>Join Digital Queue';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                this.disabled = false;
+                this.innerHTML = '<i class="fa-solid fa-right-to-bracket me-2"></i>Join Digital Queue';
+            }
+        });
+    }
+
+    // ── Live Polling Logic ────────────────────────────────────────────────────
+    const appointmentStatus = '<?= $appointment['status'] ?>';
+    
+    if (appointmentStatus === 'checked-in') {
+        setInterval(async () => {
+            try {
+                const response = await fetch('api/queue/student_status.php');
+                const result = await response.json();
+
+                if (result.status === 'success' && result.data) {
+                    const data = result.data;
+                    
+                    document.getElementById('live-pos').innerText = '#' + data.my_position;
+                    document.getElementById('people-ahead').innerText = data.people_ahead;
+
+                    if (data.queue_status === 'serving') {
+                        document.getElementById('queue-details').classList.add('d-none');
+                        document.getElementById('proceed-alert').classList.remove('d-none');
+                    } else {
+                        document.getElementById('queue-details').classList.remove('d-none');
+                        document.getElementById('proceed-alert').classList.add('d-none');
+                    }
+                    
+                    // If status became 'done' on server, reload to show completed view
+                    if (data.queue_status === 'done') {
+                        location.reload();
+                    }
+                }
+            } catch (err) {
+                console.error('Polling error:', err);
+            }
+        }, 3000); // Poll every 3 seconds
     }
 </script>
 

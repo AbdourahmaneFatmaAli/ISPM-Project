@@ -1,7 +1,11 @@
 </div> <!-- End Container -->
-<footer class="text-center py-4 mt-5 bg-white border-top">
+</div> <!-- End Container -->
+<footer class="text-center py-5 mt-5 border-top border-white border-opacity-5">
     <div class="container">
-        <p class="text-muted mb-0"><i class="fa-regular fa-calendar-check me-2"></i>&copy; <?= date('Y'); ?> DQSSA Appointment System. All rights reserved.</p>
+        <p class="text-muted small mb-0">
+            <i class="fa-solid fa-graduation-cap me-2 text-primary"></i> 
+            &copy; <?= date('Y'); ?> Pan-Atlantic University Digital Queue. All rights reserved.
+        </p>
     </div>
 </footer>
 <!-- Bootstrap JS -->

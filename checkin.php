@@ -20,12 +20,17 @@
  */
 require_once 'includes/auth_check.php';
 require_role('staff');
+require_once 'config/config.php';
 require_once 'config/database.php';
 
 $error     = '';
 $checkedIn = null; // holds full result data on success
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['qr_code'])) {
+    if(!validate_csrf_token($_POST['csrf_token'] ?? '')) {
+        die("CSRF token validation failed.");
+    }
+    
     $qr_code = trim($_POST['qr_code']);
 
     if (empty($qr_code)) {
@@ -217,6 +222,7 @@ require_once 'includes/header.php';
 
                 <!-- Input form -->
                 <form action="" method="POST">
+                    <input type="hidden" name="csrf_token" value="<?= generate_csrf_token() ?>">
                     <div class="mb-3">
                         <input
                             type="text"

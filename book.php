@@ -8,137 +8,102 @@ $stmt = $pdo->query("SELECT * FROM Services ORDER BY name ASC");
 $services = $stmt->fetchAll();
 ?>
 
-<div class="row justify-content-center mt-4">
-    <div class="col-md-8">
-        <div class="card shadow-sm border-0">
-            <div class="card-header bg-primary text-white py-3">
-                <h4 class="mb-0">
-                    <i class="fa-solid fa-calendar-plus me-2"></i> Book an Appointment
-                </h4>
-            </div>
-            <div class="card-body p-4">
-                <!-- Success/Error Messages -->
-                <?php if (isset($_GET['success'])): ?>
-                    <div class="alert alert-success alert-dismissible fade show fw-bold">
-                        <i class="fa-solid fa-circle-check me-2"></i>
-                        <?= htmlspecialchars($_GET['success']) ?>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+<div class="row min-vh-100 align-items-center justify-content-center animate__animated animate__fadeIn pb-5">
+    <div class="col-lg-10 col-xl-8">
+        <div class="card border-0 Modern-Glass-Card shadow-2xl overflow-hidden">
+            <div class="row g-0">
+                <!-- Left Sidebar: Info -->
+                <div class="col-md-4 bg-primary bg-opacity-10 p-4 p-lg-5 text-center border-end border-white border-opacity-10 d-none d-md-block">
+                    <div class="bg-primary rounded-circle d-inline-flex align-items-center justify-content-center mb-4 shadow-lg" style="width: 70px; height: 70px;">
+                        <i class="fa-solid fa-calendar-plus text-white fs-3"></i>
                     </div>
-                <?php endif; ?>
-
-                <?php if (isset($_GET['error'])): ?>
-                    <div class="alert alert-danger alert-dismissible fade show fw-bold">
-                        <i class="fa-solid fa-circle-exclamation me-2"></i>
-                        <?= htmlspecialchars($_GET['error']) ?>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    <h4 class="fw-bolder text-white mb-4">Book Service</h4>
+                    <p class="text-muted small mb-5">Reserve your spot in the digital queue in three simple steps.</p>
+                    
+                    <div class="text-start mb-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="bg-primary rounded-circle me-3 flex-shrink-0" style="width: 10px; height: 10px;"></div>
+                            <span class="small text-white opacity-75">Instant Confirmation</span>
+                        </div>
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="bg-primary rounded-circle me-3 flex-shrink-0" style="width: 10px; height: 10px;"></div>
+                            <span class="small text-white opacity-75">Live Queue Updates</span>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <div class="bg-primary rounded-circle me-3 flex-shrink-0" style="width: 10px; height: 10px;"></div>
+                            <span class="small text-white opacity-75">Smart Arrival Alerts</span>
+                        </div>
                     </div>
-                <?php endif; ?>
-
-                <!-- Booking Instructions -->
-                <div class="alert alert-info border-0 mb-4">
-                    <h6 class="alert-heading fw-bold">
-                        <i class="fas fa-info-circle me-2"></i>How to Book
-                    </h6>
-                    <ol class="mb-0 ps-3">
-                        <li>Select the service you need</li>
-                        <li>Choose your preferred date and time</li>
-                        <li>Click "Confirm Booking" to complete</li>
-                        <li>You'll receive a QR code to check in on the day</li>
-                    </ol>
                 </div>
 
-                <!-- Booking Form -->
-                <form action="api/appointments/create.php" method="POST" id="bookingForm">
-                    <div class="mb-4">
-                        <label class="form-label fw-bold">
-                            <i class="fas fa-concierge-bell me-2 text-primary"></i>Select Service
-                        </label>
-                        <select name="service_id" class="form-select form-select-lg" required id="serviceSelect">
-                            <option value="">-- Choose a Service --</option>
-                            <?php foreach ($services as $service): ?>
-                                <option value="<?= $service['id'] ?>"
-                                    data-description="<?= htmlspecialchars($service['description']) ?>">
-                                    <?= htmlspecialchars($service['name']) ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                        <div class="form-text" id="serviceDescription"></div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6 mb-4">
-                            <label class="form-label fw-bold">
-                                <i class="far fa-calendar me-2 text-primary"></i>Date
-                            </label>
-                            <input type="date" name="date" class="form-control form-control-lg" required
-                                min="<?= date('Y-m-d') ?>" max="<?= date('Y-m-d', strtotime('+30 days')) ?>"
-                                id="dateInput">
-                            <div class="form-text">
-                                <i class="fas fa-info-circle me-1"></i>You can book up to 30 days in advance
-                            </div>
-                        </div>
-
-                        <div class="col-md-6 mb-4">
-                            <label class="form-label fw-bold">
-                                <i class="far fa-clock me-2 text-primary"></i>Time
-                            </label>
-                            <input type="time" name="time" class="form-control form-control-lg" required min="08:00"
-                                max="17:00" id="timeInput">
-                            <div class="form-text">
-                                <i class="fas fa-info-circle me-1"></i>Office hours: 8:00 AM - 5:00 PM
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Optional: Notes field -->
-                    <div class="mb-4">
-                        <label class="form-label fw-bold">
-                            <i class="far fa-comment me-2 text-primary"></i>Additional Notes (Optional)
-                        </label>
-                        <textarea name="notes" class="form-control" rows="3"
-                            placeholder="Any special requests or information?" maxlength="500"></textarea>
-                        <div class="form-text">Maximum 500 characters</div>
-                    </div>
-
-                    <!-- Submit Buttons -->
-                    <div class="d-grid gap-2">
-                        <button type="submit" class="btn btn-success btn-lg fw-bold">
-                            <i class="fa-solid fa-check me-2"></i> Confirm Booking
-                        </button>
-                        <a href="dashboard.php" class="btn btn-outline-secondary btn-lg">
-                            <i class="fas fa-times me-2"></i> Cancel
+                <!-- Right Sidebar: Form -->
+                <div class="col-md-8 p-4 p-lg-5">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h3 class="fw-bolder text-white mb-0">New Appointment</h3>
+                        <a href="dashboard.php" class="btn btn-outline-light btn-sm rounded-pill px-3">
+                            <i class="fa-solid fa-xmark small me-1"></i> Cancel
                         </a>
                     </div>
-                </form>
 
-                <!-- Recent Bookings Info -->
-                <div class="mt-4 pt-4 border-top">
-                    <h6 class="fw-bold mb-3">
-                        <i class="fas fa-history me-2 text-muted"></i>After Booking
-                    </h6>
-                    <div class="row g-3">
-                        <div class="col-md-4">
-                            <div class="text-center p-3 bg-light rounded">
-                                <i class="fas fa-envelope fa-2x text-primary mb-2"></i>
-                                <p class="small mb-0 fw-bold">Email Confirmation</p>
-                                <p class="small text-muted mb-0">Instant notification</p>
+                    <?php if (isset($_GET['error'])): ?>
+                        <div class="alert bg-danger bg-opacity-10 text-danger border-0 small mb-4 animate__animated animate__shakeX">
+                            <i class="fa-solid fa-triangle-exclamation me-2"></i> <?= htmlspecialchars($_GET['error']) ?>
+                        </div>
+                    <?php endif; ?>
+
+                    <form action="api/appointments/create.php" method="POST" id="bookingForm">
+                        <input type="hidden" name="csrf_token" value="<?= generate_csrf_token() ?>">
+                        
+                        <!-- Step 1: Service -->
+                        <div class="mb-4 animate__animated animate__fadeInUp">
+                            <label class="form-label text-muted small fw-bold text-uppercase">1. Choose Service</label>
+                            <select name="service_id" class="form-select form-select-lg" required id="serviceSelect">
+                                <option value="">Select a Department...</option>
+                                <?php foreach ($services as $service): ?>
+                                    <option value="<?= $service['id'] ?>" data-description="<?= htmlspecialchars($service['description'] ?? 'Standard department service.') ?>">
+                                        <?= htmlspecialchars($service['name']) ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                            <div class="form-text text-primary small mt-2" id="serviceDescription"></div>
+                        </div>
+
+                        <!-- Step 2: Schedule -->
+                        <div class="row g-4 mb-4">
+                            <div class="col-md-6 animate__animated animate__fadeInUp animate__delay-1s">
+                                <label class="form-label text-muted small fw-bold text-uppercase">2. Select Date</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-transparent border-end-0 text-muted"><i class="fa-regular fa-calendar"></i></span>
+                                    <input type="date" name="date" class="form-control border-start-0" required
+                                           min="<?= date('Y-m-d') ?>" max="<?= date('Y-m-d', strtotime('+30 days')) ?>"
+                                           id="dateInput">
+                                </div>
+                            </div>
+                            <div class="col-md-6 animate__animated animate__fadeInUp animate__delay-1s">
+                                <label class="form-label text-muted small fw-bold text-uppercase">3. Pick Time</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-transparent border-end-0 text-muted"><i class="fa-regular fa-clock"></i></span>
+                                    <input type="time" name="time" class="form-control border-start-0" required 
+                                           min="08:00" max="17:00" step="1800" id="timeInput">
+                                </div>
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="text-center p-3 bg-light rounded">
-                                <i class="fas fa-qrcode fa-2x text-success mb-2"></i>
-                                <p class="small mb-0 fw-bold">QR Code Generated</p>
-                                <p class="small text-muted mb-0">For check-in</p>
-                            </div>
+
+                        <!-- Step 3: Notes -->
+                        <div class="mb-5 animate__animated animate__fadeInUp animate__delay-2s">
+                            <label class="form-label text-muted small fw-bold text-uppercase">Additional Notes (Optional)</label>
+                            <textarea name="notes" class="form-control" rows="2" placeholder="Tell us if you have special requirements..." maxlength="500"></textarea>
                         </div>
-                        <div class="col-md-4">
-                            <div class="text-center p-3 bg-light rounded">
-                                <i class="fas fa-bell fa-2x text-warning mb-2"></i>
-                                <p class="small mb-0 fw-bold">Reminder Alert</p>
-                                <p class="small text-muted mb-0">30 mins before</p>
-                            </div>
+
+                        <div class="animate__animated animate__fadeInUp animate__delay-2s">
+                            <button type="submit" class="btn btn-primary w-100 py-3 rounded-4 shadow-lg mb-3">
+                                CONFIRM APPOINTMENT <i class="fa-solid fa-check-circle ms-2"></i>
+                            </button>
+                            <p class="text-center text-muted smaller mb-0">
+                                <i class="fa-solid fa-info-circle me-1"></i> You can cancel or reschedule up to 1 hour before.
+                            </p>
                         </div>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -146,55 +111,33 @@ $services = $stmt->fetchAll();
 </div>
 
 <script>
-    // Show service description when selected
+    // Logic for dynamic form guidance
     document.getElementById('serviceSelect').addEventListener('change', function () {
         const description = this.options[this.selectedIndex].dataset.description;
         const descDiv = document.getElementById('serviceDescription');
-
-        if (description) {
-            descDiv.innerHTML = '<i class="fas fa-info-circle text-primary me-1"></i>' + description;
-        } else {
-            descDiv.innerHTML = '';
-        }
+        descDiv.innerHTML = description ? `<i class="fa-solid fa-circle-info me-2"></i>${description}` : '';
     });
 
-    // Prevent selecting past times for today
     document.getElementById('dateInput').addEventListener('change', function () {
         const selectedDate = new Date(this.value);
         const today = new Date();
         today.setHours(0, 0, 0, 0);
-
         const timeInput = document.getElementById('timeInput');
 
         if (selectedDate.getTime() === today.getTime()) {
-            // If today, set min time to current hour + 1
             const now = new Date();
-            const minHour = now.getHours() + 1;
-            const minTime = String(minHour).padStart(2, '0') + ':00';
+            const minTime = String(now.getHours() + 1).padStart(2, '0') + ':00';
             timeInput.min = minTime;
         } else {
-            // For future dates, allow booking from 8 AM
             timeInput.min = '08:00';
         }
     });
 
-    // Form validation
     document.getElementById('bookingForm').addEventListener('submit', function (e) {
-        const date = document.getElementById('dateInput').value;
-        const time = document.getElementById('timeInput').value;
-
-        if (!date || !time) {
+        const time = document.getElementById('timeInput').value.replace(':', '');
+        if (time < '0800' || time > '1700') {
             e.preventDefault();
-            alert('Please select both date and time');
-            return false;
-        }
-
-        // Check if time is within office hours
-        const selectedTime = time.replace(':', '');
-        if (selectedTime < '0800' || selectedTime > '1700') {
-            e.preventDefault();
-            alert('Please select a time between 8:00 AM and 5:00 PM');
-            return false;
+            alert('Please select a time within office hours (8:00 AM - 5:00 PM)');
         }
     });
 </script>
